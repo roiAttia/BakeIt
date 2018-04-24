@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="servings_cardview_corner_radius">16dp</dimen>
+    <dimen name="card_view_padding">8dp</dimen>
+    <dimen name="divider_width">1dp</dimen>
+    <dimen name="recipes_text_size">36sp</dimen>
+    <dimen name="custom_tab_text_size">24sp</dimen>
+    <dimen name="exoplayer_vertical_margin">4dp</dimen>
+    <dimen name="exoplayer_horizontal_padding">4dp</dimen>
+    <dimen name="recipe_card_vertical_margin">4dp</dimen>
+    <dimen name="recipe_card_corner_radius">8dp</dimen>
+    <dimen name="recipe_text_size">18sp</dimen>
+    <dimen name="recipe_height">170dp</dimen>
+    <dimen name="bullet_size">24sp</dimen>
+
+</resources>
