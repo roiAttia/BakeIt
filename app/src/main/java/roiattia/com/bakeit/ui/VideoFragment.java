@@ -145,10 +145,24 @@ public class VideoFragment extends Fragment
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        releasePlayer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(VIDEO_URL, mVideoUrl);
-        outState.putLong(EXOPLAYER_POSITION, mExoPlayer.getCurrentPosition());
+        if(mExoPlayer != null) {
+            outState.putString(VIDEO_URL, mVideoUrl);
+            outState.putLong(EXOPLAYER_POSITION, mExoPlayer.getCurrentPosition());
+        }
     }
 
     @Override

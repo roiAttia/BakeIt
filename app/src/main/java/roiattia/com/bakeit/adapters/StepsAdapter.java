@@ -60,6 +60,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapter
             }
             // check for video for this step, if exist then set the videoImage to VISIBLE
             if (!mStepList.get(position).videoUrl().equals("")) {
+                holder.videoImage.setImageDrawable(mContext.getResources()
+                        .getDrawable(R.drawable.ic_videocam_black_24dp));
+                holder.videoImage.setVisibility(View.VISIBLE);
+            } else if(!mStepList.get(position).thumbnailUrl().equals("")) {
+                holder.videoImage.setImageDrawable(mContext.getResources()
+                        .getDrawable(R.drawable.ic_image_black_24dp));
                 holder.videoImage.setVisibility(View.VISIBLE);
             } else {
                 holder.videoImage.setVisibility(View.GONE);
