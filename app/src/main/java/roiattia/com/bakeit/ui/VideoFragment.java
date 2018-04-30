@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -32,13 +34,17 @@ import roiattia.com.bakeit.R;
 public class VideoFragment extends Fragment
     implements ExoPlayer.EventListener{
 
-    private static final String VIDEO_URL = "VIDEO_URL";
+    private static final String MULTIMEDIA_URL = "MULTIMEDIA_URL";
     private static final String EXOPLAYER_POSITION = "EXOPLAYER_POSITION";
+
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
-    private String mVideoUrl;
+    private ImageView mStepImage;
+
+    private String mMultimediaUrl;
     private boolean mTwoPane;
-    private long playerPosition = 0;
+    private boolean mIsVideo;
+    private long mPlayerPosition = 0;
 
     public VideoFragment() {}
 
@@ -48,12 +54,31 @@ public class VideoFragment extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_video, container, false);
 
         mPlayerView = rootView.findViewById(R.id.playerView);
+        mStepImage = rootView.findViewById(R.id.iv_step);
 
         // check if need to restore data in case of rotation
         if(savedInstanceState != null) {
-            mVideoUrl = savedInstanceState.getString(VIDEO_URL);
-            playerPosition = savedInstanceState.getLong(EXOPLAYER_POSITION);
+            mMultimediaUrl = savedInstanceState.getString(MULTIMEDIA_URL);
+            mPlayerPosition = savedInstanceState.getLong(EXOPLAYER_POSITION);
+            mIsVideo = savedInstanceState.getBoolean(RecipeActivity.IS_VIDEO);
         }
+
+        if(mIsVideo){
+            loadVideo();
+        } else {
+            loadImage();
+        }
+
+        return rootView;
+    }
+
+    private void loadImage() {
+        mPlayerView.setVisibility(View.GONE);
+        Glide.with(getContext()).load(mMultimediaUrl).into(mStepImage);
+    }
+
+    private void loadVideo() {
+        mStepImage.setVisibility(View.GONE);
 
         mTwoPane = getContext().getResources().getBoolean(R.bool.is_tablet);
         // Smartphone mode
@@ -62,24 +87,26 @@ public class VideoFragment extends Fragment
             if(getContext().getResources().getBoolean(R.bool.is_landscape)){
                 hideSystemUI();
             }
-            initializePlayer(Uri.parse(mVideoUrl));
+            initializePlayer(Uri.parse(mMultimediaUrl));
 
             // Tablet mode
         } else {
-            if(null != mVideoUrl){
-                initializePlayer(Uri.parse(mVideoUrl));
+            if(null != mMultimediaUrl){
+                initializePlayer(Uri.parse(mMultimediaUrl));
             }
         }
-
-        return rootView;
     }
 
-    public void setVideoUrl(String videoUrl){
-        mVideoUrl = videoUrl;
+    public void setMultimediaUrl(String multimediaUrl){
+        mMultimediaUrl = multimediaUrl;
         // if on Tablet then initialize the player
-        if(mTwoPane) {
-            initializePlayer(Uri.parse(mVideoUrl));
+        if(mTwoPane && mIsVideo) {
+            initializePlayer(Uri.parse(mMultimediaUrl));
         }
+    }
+
+    public void setIsVideo(boolean isVideo){
+        mIsVideo = isVideo;
     }
 
     private void hideSystemUI() {
@@ -114,9 +141,9 @@ public class VideoFragment extends Fragment
 
             mExoPlayer.prepare(mediaSource);
             // set the player to the last position in case of rotation
-            mExoPlayer.seekTo(playerPosition);
+            mExoPlayer.seekTo(mPlayerPosition);
             // if in case of rotation then continue play
-            if(playerPosition > 0){
+            if(mPlayerPosition > 0){
                 mExoPlayer.setPlayWhenReady(true);
             } else {
                 mExoPlayer.setPlayWhenReady(false);
@@ -160,9 +187,10 @@ public class VideoFragment extends Fragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if(mExoPlayer != null) {
-            outState.putString(VIDEO_URL, mVideoUrl);
             outState.putLong(EXOPLAYER_POSITION, mExoPlayer.getCurrentPosition());
         }
+        outState.putString(MULTIMEDIA_URL, mMultimediaUrl);
+        outState.putBoolean(RecipeActivity.IS_VIDEO, mIsVideo);
     }
 
     @Override

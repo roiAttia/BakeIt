@@ -7,7 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -51,6 +54,11 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesA
         if(null != mRecipes.get(position)) {
             // set the name of the recipe
             holder.mName.setText(mRecipes.get(position).name());
+
+            // load recipe image if available
+            if(!mRecipes.get(position).image().equals("")){
+                Glide.with(mContext).load(mRecipes.get(position).image()).into(holder.mRecipeImage);
+            }
         }
     }
 
@@ -64,8 +72,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesA
 
         @BindView(R.id.tv_recipe_name) TextView mName;
         @BindView(R.id.cv_recipe) CardView mRecipeCard;
+        @BindView(R.id.iv_recipe) ImageView mRecipeImage;
 
-        public RecipesAdapterViewHolder(View itemView) {
+        RecipesAdapterViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);

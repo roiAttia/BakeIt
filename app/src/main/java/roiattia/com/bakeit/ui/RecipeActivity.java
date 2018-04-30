@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,8 +26,10 @@ public class RecipeActivity extends AppCompatActivity
         implements StepsAdapter.StepAdapterOnClickHandler {
 
     public static final String TAG = RecipeActivity.class.getSimpleName();
-    public static final String STEP = "STEP";
+    public static final String STEP_VIDEO = "STEP_VIDEO";
+    public static final String STEP_THUMBNAIL = "STEP";
     private static final String VIDEO_FRAGMENT = "VIDEO_FRAGMENT";
+    public static final String IS_VIDEO = "IS_VIDEO";
 
     private View mLastStep;
     private Recipe mRecipe;
@@ -84,35 +85,50 @@ public class RecipeActivity extends AppCompatActivity
     public void onClick(int stepIndex, View step) {
         // check if there is a video for this step
         if (!mRecipe.steps().get(stepIndex).videoUrl().equals("")) {
-            // Smartphone mode
-            if (!mTwoPane) {
-                Intent intent = new Intent(RecipeActivity.this, VideoActivity.class);
-                intent.putExtra(STEP, mRecipe.steps().get(stepIndex).videoUrl());
-                intent.putExtra(RecipesListActivity.RECIPE_ITEM, mRecipe.name());
-                startActivity(intent);
-                // Tablet mode
-            } else {
-                mVideoFragment.releasePlayer();
-                mVideoFragment.setVideoUrl(mRecipe.steps().get(stepIndex).videoUrl());
-                // check if there is a step stored
-                if(null != mLastStep) {
-                    // get the cardview of the step
-                    CardView cardView = mLastStep.findViewById(R.id.cv_step);
-                    // set the step's cardview background color back to white
-                    cardView.setCardBackgroundColor(Color.WHITE);
-                }
-                CardView cardView = step.findViewById(R.id.cv_step);
-                // set the step's cardview background color to selected color
-                cardView.setCardBackgroundColor(getResources()
-                        .getColor(R.color.colorSelectedStepCardviewBackground));
-                // save the step in mLastStep to set it color back to white
-                // when other step is selected
-                mLastStep = step;
-            }
-            // video not exist for this step
-        } else{
+            loadVideo(stepIndex, step);
+        } else if (!mRecipe.steps().get(stepIndex).thumbnailUrl().equals("")){
+            loadImage(stepIndex, step);
+        } else {
             Toast.makeText(this, R.string.video_not_available_toast, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void loadImage(int stepIndex, View step) {
+        Intent intent = new Intent(RecipeActivity.this, VideoActivity.class);
+        intent.putExtra(STEP_THUMBNAIL, mRecipe.steps().get(stepIndex).thumbnailUrl());
+        intent.putExtra(RecipesListActivity.RECIPE_ITEM, mRecipe.name());
+        intent.putExtra(IS_VIDEO, false);
+        startActivity(intent);
+    }
+
+    private void loadVideo(int stepIndex, View step) {
+        // Smartphone mode
+        if (!mTwoPane) {
+            Intent intent = new Intent(RecipeActivity.this, VideoActivity.class);
+            intent.putExtra(STEP_VIDEO, mRecipe.steps().get(stepIndex).videoUrl());
+            intent.putExtra(RecipesListActivity.RECIPE_ITEM, mRecipe.name());
+            intent.putExtra(IS_VIDEO, true);
+            startActivity(intent);
+            // Tablet mode
+        } else {
+            mVideoFragment.releasePlayer();
+            mVideoFragment.setMultimediaUrl(mRecipe.steps().get(stepIndex).videoUrl());
+            // check if there is a step stored
+            if(null != mLastStep) {
+                // get the cardview of the step
+                CardView cardView = mLastStep.findViewById(R.id.cv_step);
+                // set the step's cardview background color back to white
+                cardView.setCardBackgroundColor(Color.WHITE);
+            }
+            CardView cardView = step.findViewById(R.id.cv_step);
+            // set the step's cardview background color to selected color
+            cardView.setCardBackgroundColor(getResources()
+                    .getColor(R.color.colorSelectedStepCardviewBackground));
+            // save the step in mLastStep to set it color back to white
+            // when other step is selected
+            mLastStep = step;
+        }
+        // video not exist for this step
     }
 
     @Override

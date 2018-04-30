@@ -5,7 +5,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import roiattia.com.bakeit.R;
 import roiattia.com.bakeit.utils.TextFontUtils;
@@ -17,10 +16,9 @@ public class VideoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
 
-
         // get intent and extra bundle
-        String videoUrl = getIntent().getStringExtra(RecipeActivity.STEP);
         String recipeName = getIntent().getStringExtra(RecipesListActivity.RECIPE_ITEM);
+        boolean isVideo = getIntent().getBooleanExtra(RecipeActivity.IS_VIDEO, false);
 
         if(null != recipeName){
             // set the toolbar's title, font and add back button
@@ -30,11 +28,19 @@ public class VideoActivity extends AppCompatActivity {
             getSupportActionBar().setCustomView(toolbarTextview);
         }
 
+
         // only create StepFragment if there is none exist
-        if(savedInstanceState == null) {
-            if (videoUrl != null) {
+        if (savedInstanceState == null) {
+            String multimediaUrl = getIntent().getStringExtra(RecipeActivity.STEP_VIDEO);
+            if (multimediaUrl != null) {
                 VideoFragment videoFragment = new VideoFragment();
-                videoFragment.setVideoUrl(videoUrl);
+                if (isVideo) {
+                    videoFragment.setIsVideo(true);
+                } else {
+                    videoFragment.setIsVideo(false);
+                }
+
+                videoFragment.setMultimediaUrl(multimediaUrl);
 
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
