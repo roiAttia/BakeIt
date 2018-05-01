@@ -2,27 +2,33 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_widget"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_widget"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical|center_horizontal"
+    android:background="@color/colorAccent"
     android:orientation="vertical">
-
-    <ImageView
-        android:id="@+id/widget_plant_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/cake_100" />
 
     <TextView
         android:id="@+id/appwidget_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:fontFamily="@font/bilbo"
+        android:gravity="center"
+        android:padding="16dp"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="24sp"
+        android:textStyle="bold"
         tools:text="Nutella Pie" />
+
+    <ListView
+        android:id="@+id/appwidget_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp" />
+
 
 </LinearLayout>

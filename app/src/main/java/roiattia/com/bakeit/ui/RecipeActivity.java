@@ -16,8 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.util.List;
+
 import roiattia.com.bakeit.R;
-import roiattia.com.bakeit.RecipeWidgetProvider;
+import roiattia.com.bakeit.models.Ingredient;
+import roiattia.com.bakeit.widget.RecipeWidgetProvider;
 import roiattia.com.bakeit.adapters.StepsAdapter;
 import roiattia.com.bakeit.models.Recipe;
 import roiattia.com.bakeit.utils.TextFontUtils;
@@ -35,6 +38,8 @@ public class RecipeActivity extends AppCompatActivity
     private Recipe mRecipe;
     private boolean mTwoPane;
     private VideoFragment mVideoFragment;
+
+    public static List<Ingredient> mIngrediens;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,13 +145,15 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.mi_add_widget){
+            mIngrediens = mRecipe.ingredients();
             Toast.makeText(this, R.string.widget_added_toast, Toast.LENGTH_SHORT).show();
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
             //Trigger data update to handle the GridView widgets and force a data refresh
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_text);
+//            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_text);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_listview);
             //Now update all widgets
-            RecipeWidgetProvider.updateRecipeWidget(this, appWidgetManager, mRecipe, appWidgetIds);
+            RecipeWidgetProvider.updateIngredientWidgets(this, appWidgetManager, mRecipe, appWidgetIds);
         }
         return super.onOptionsItemSelected(item);
     }

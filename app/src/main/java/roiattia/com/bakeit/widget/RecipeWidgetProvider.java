@@ -1,12 +1,21 @@
-package roiattia.com.bakeit;
+package roiattia.com.bakeit.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
+import roiattia.com.bakeit.R;
+import roiattia.com.bakeit.models.Ingredient;
 import roiattia.com.bakeit.models.Recipe;
 import roiattia.com.bakeit.ui.RecipeActivity;
 import roiattia.com.bakeit.ui.RecipesListActivity;
@@ -16,33 +25,29 @@ import roiattia.com.bakeit.ui.RecipesListActivity;
  */
 public class RecipeWidgetProvider extends AppWidgetProvider {
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, Recipe test,
+    public static void updateRecipeWidget(Context context, AppWidgetManager appWidgetManager, Recipe recipe,
                                 int appWidgetId) {
-        String widgetText;
-        widgetText = test.name();
 
-        // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
-
+        views.setTextViewText(R.id.appwidget_text, String.format("%s %s", recipe.name(), context.getString(R.string.widget_ingredients)));
+        Intent ingredientsIntent = new Intent(context, WidgetService.class);
+        views.setRemoteAdapter(R.id.appwidget_listview, ingredientsIntent);
         Intent intent = new Intent(context, RecipeActivity.class);
-        intent.putExtra(RecipesListActivity.RECIPE_ITEM, test);
+        intent.putExtra(RecipesListActivity.RECIPE_ITEM, recipe);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         views.setOnClickPendingIntent(R.id.layout_widget, pendingIntent);
-
-        // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
-    public static void updateRecipeWidget(Context context, AppWidgetManager appWidgetManager, Recipe test, int[] appWidgetIds){
+    public static void updateIngredientWidgets(Context context, AppWidgetManager appWidgetManager, Recipe recipe, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, test, appWidgetId);
+            updateRecipeWidget(context, appWidgetManager, recipe, appWidgetId);
         }
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
