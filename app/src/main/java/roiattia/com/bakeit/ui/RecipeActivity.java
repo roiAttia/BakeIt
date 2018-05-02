@@ -108,7 +108,6 @@ public class RecipeActivity extends AppCompatActivity
     }
 
     private void loadVideo(int stepIndex, View step) {
-        mVideoFragment.setIsVideo(true);
         // Smartphone mode
         if (!mTwoPane) {
             Intent intent = new Intent(RecipeActivity.this, VideoActivity.class);
@@ -118,6 +117,7 @@ public class RecipeActivity extends AppCompatActivity
             startActivity(intent);
             // Tablet mode
         } else {
+            mVideoFragment.setIsVideo(true);
             mVideoFragment.releasePlayer();
             mVideoFragment.setMultimediaUrl(mRecipe.steps().get(stepIndex).videoUrl());
             // check if there is a step stored
