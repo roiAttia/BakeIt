@@ -47,7 +47,15 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        for (int appWidgetId : appWidgetIds) {
+            RemoteViews views = new RemoteViews(
+                    context.getPackageName(),
+                    R.layout.recipe_widget
+            );
+            Intent intent = new Intent(context, WidgetService.class);
+            views.setRemoteAdapter(R.id.appwidget_listview, intent);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
     }
 
     @Override

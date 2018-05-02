@@ -46,7 +46,7 @@ public class RecipeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
-        /* get intent from calling activity */
+        // get intent from calling activity
         Bundle data = getIntent().getExtras();
 
         // Check to see if it's a Tablet layout and set mTwoPane accordingly
@@ -151,8 +151,8 @@ public class RecipeActivity extends AppCompatActivity
             Toast.makeText(this, R.string.widget_added_toast, Toast.LENGTH_SHORT).show();
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
-            //Trigger data update to handle the GridView widgets and force a data refresh
-//            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_text);
+            //Trigger data update to force a data refresh
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_text);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_listview);
             //Now update all widgets
             RecipeWidgetProvider.updateIngredientWidgets(this, appWidgetManager, mRecipe, appWidgetIds);
