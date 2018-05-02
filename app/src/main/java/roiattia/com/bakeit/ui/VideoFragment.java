@@ -63,6 +63,8 @@ public class VideoFragment extends Fragment
             mIsVideo = savedInstanceState.getBoolean(RecipeActivity.IS_VIDEO);
         }
 
+        mTwoPane = getContext().getResources().getBoolean(R.bool.is_tablet);
+
         if(mIsVideo){
             loadVideo();
         } else {
@@ -74,13 +76,13 @@ public class VideoFragment extends Fragment
 
     private void loadImage() {
         mPlayerView.setVisibility(View.GONE);
+        mStepImage.setVisibility(View.VISIBLE);
         Glide.with(getContext()).load(mMultimediaUrl).into(mStepImage);
     }
 
     private void loadVideo() {
         mStepImage.setVisibility(View.GONE);
-
-        mTwoPane = getContext().getResources().getBoolean(R.bool.is_tablet);
+        mPlayerView.setVisibility(View.VISIBLE);
         // Smartphone mode
         if(!mTwoPane){
             // check if in landscape mode to enable full screen video
@@ -101,7 +103,7 @@ public class VideoFragment extends Fragment
         mMultimediaUrl = multimediaUrl;
         // if on Tablet then initialize the player
         if(mTwoPane && mIsVideo) {
-            initializePlayer(Uri.parse(mMultimediaUrl));
+            loadVideo();
         }
     }
 
@@ -174,13 +176,17 @@ public class VideoFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-        releasePlayer();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        releasePlayer();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
+        }
     }
 
     @Override

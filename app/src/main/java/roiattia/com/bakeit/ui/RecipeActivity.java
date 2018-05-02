@@ -99,6 +99,7 @@ public class RecipeActivity extends AppCompatActivity
     }
 
     private void loadImage(int stepIndex, View step) {
+        mVideoFragment.setIsVideo(false);
         Intent intent = new Intent(RecipeActivity.this, VideoActivity.class);
         intent.putExtra(STEP_THUMBNAIL, mRecipe.steps().get(stepIndex).thumbnailUrl());
         intent.putExtra(RecipesListActivity.RECIPE_ITEM, mRecipe.name());
@@ -107,6 +108,7 @@ public class RecipeActivity extends AppCompatActivity
     }
 
     private void loadVideo(int stepIndex, View step) {
+        mVideoFragment.setIsVideo(true);
         // Smartphone mode
         if (!mTwoPane) {
             Intent intent = new Intent(RecipeActivity.this, VideoActivity.class);
