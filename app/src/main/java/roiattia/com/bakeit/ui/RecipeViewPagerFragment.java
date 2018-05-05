@@ -17,8 +17,6 @@ import roiattia.com.bakeit.models.Recipe;
 
 public class RecipeViewPagerFragment extends Fragment {
 
-    public static final String INGREDIENTS = "INGREDIENTS";
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,28 +33,29 @@ public class RecipeViewPagerFragment extends Fragment {
             stepsListFragment.setStepList(recipe.steps());
             ViewPager viewPager = rootView.findViewById(R.id.viewPager);
             viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+
                 @Override
                 public Fragment getItem(int position) {
                     return position == 0 ? ingredientsListFragment : stepsListFragment;
                 }
 
                 @Override
-                public CharSequence getPageTitle(int position) {
-                    return position == 0 ? getString(R.string.ingredients_headline) : getString(R.string.stepsfragment_headline);
-                }
-
-                @Override
                 public int getCount() {
                     return 2;
                 }
+
             });
 
             TabLayout tabLayout = rootView.findViewById(R.id.tabLayout);
             tabLayout.setupWithViewPager(viewPager);
+
+            // Ingredients tab configure
             TextView tabOne = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
             tabOne.setText(getString(R.string.ingredients_headline));
             tabOne.setTextColor(getResources().getColor(R.color.colorTabSelected));
             tabLayout.getTabAt(0).setCustomView(tabOne);
+
+            // Steps tab configure
             TextView tabTwo = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
             tabTwo.setText(getString(R.string.stepsfragment_headline));
             tabTwo.setTextColor(getResources().getColor(R.color.colorTabUnselected));
