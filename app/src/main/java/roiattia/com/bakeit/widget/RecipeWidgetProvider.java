@@ -32,6 +32,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         views.setTextViewText(R.id.appwidget_text, String.format("%s %s", recipe.name(), context.getString(R.string.widget_ingredients)));
         Intent ingredientsIntent = new Intent(context, WidgetService.class);
         views.setRemoteAdapter(R.id.appwidget_listview, ingredientsIntent);
+        views.setEmptyView(R.id.appwidget_listview, R.id.empty_view);
         Intent intent = new Intent(context, RecipeActivity.class);
         intent.putExtra(RecipesListActivity.RECIPE_ITEM, recipe);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

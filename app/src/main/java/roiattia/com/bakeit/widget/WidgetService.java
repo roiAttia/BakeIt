@@ -36,7 +36,6 @@ public class WidgetService extends RemoteViewsService {
 
         public RecipeRemoteFactory(Context applicationContext) {
             mContext = applicationContext;
-            mIngredientList = RecipeActivity.mIngrediens;
         }
 
         @Override
