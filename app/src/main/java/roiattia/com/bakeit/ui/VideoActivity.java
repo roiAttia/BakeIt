@@ -1,5 +1,6 @@
 package roiattia.com.bakeit.ui;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -32,19 +33,18 @@ public class VideoActivity extends AppCompatActivity {
         // only create StepFragment if there is none exist
         if (savedInstanceState == null) {
             String multimediaUrl = getIntent().getStringExtra(RecipeActivity.STEP_VIDEO);
-            if (multimediaUrl != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            if (isVideo) {
                 VideoFragment videoFragment = new VideoFragment();
-                if (isVideo) {
-                    videoFragment.setIsVideo(true);
-                } else {
-                    videoFragment.setIsVideo(false);
-                }
-
                 videoFragment.setMultimediaUrl(multimediaUrl);
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .add(R.id.video_container, videoFragment)
+                        .commit();
+            } else {
+                ImageFragment imageFragment = new ImageFragment();
+                imageFragment.setThumbnailUrl(multimediaUrl);
+                fragmentManager.beginTransaction()
+                        .add(R.id.video_container, imageFragment)
                         .commit();
             }
         }

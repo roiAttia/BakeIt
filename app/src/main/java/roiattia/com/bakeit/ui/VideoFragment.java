@@ -39,7 +39,6 @@ public class VideoFragment extends Fragment
 
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
-    private ImageView mStepImage;
 
     private String mMultimediaUrl;
     private boolean mTwoPane;
@@ -54,7 +53,6 @@ public class VideoFragment extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_video, container, false);
 
         mPlayerView = rootView.findViewById(R.id.playerView);
-        mStepImage = rootView.findViewById(R.id.iv_step);
 
         // check if need to restore data in case of rotation
         if(savedInstanceState != null) {
@@ -65,23 +63,13 @@ public class VideoFragment extends Fragment
 
         mTwoPane = getContext().getResources().getBoolean(R.bool.is_tablet);
 
-        if(mIsVideo){
-            loadVideo();
-        } else {
-            loadImage();
-        }
+        loadVideo();
 
         return rootView;
     }
 
-    private void loadImage() {
-        mPlayerView.setVisibility(View.GONE);
-        mStepImage.setVisibility(View.VISIBLE);
-        Glide.with(getContext()).load(mMultimediaUrl).into(mStepImage);
-    }
 
     private void loadVideo() {
-        mStepImage.setVisibility(View.GONE);
         mPlayerView.setVisibility(View.VISIBLE);
         // Smartphone mode
         if(!mTwoPane){
