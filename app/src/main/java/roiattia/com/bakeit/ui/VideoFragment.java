@@ -8,9 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -34,15 +32,14 @@ import roiattia.com.bakeit.R;
 public class VideoFragment extends Fragment
     implements ExoPlayer.EventListener{
 
-    private static final String MULTIMEDIA_URL = "MULTIMEDIA_URL";
+    private static final String VIDEO_URL = "VIDEO_URL";
     private static final String EXOPLAYER_POSITION = "EXOPLAYER_POSITION";
 
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
 
-    private String mMultimediaUrl;
+    private String mVideoUrl;
     private boolean mTwoPane;
-    private boolean mIsVideo;
     private long mPlayerPosition = 0;
 
     public VideoFragment() {}
@@ -56,9 +53,8 @@ public class VideoFragment extends Fragment
 
         // check if need to restore data in case of rotation
         if(savedInstanceState != null) {
-            mMultimediaUrl = savedInstanceState.getString(MULTIMEDIA_URL);
+            mVideoUrl = savedInstanceState.getString(VIDEO_URL);
             mPlayerPosition = savedInstanceState.getLong(EXOPLAYER_POSITION);
-            mIsVideo = savedInstanceState.getBoolean(RecipeActivity.IS_VIDEO);
         }
 
         mTwoPane = getContext().getResources().getBoolean(R.bool.is_tablet);
@@ -70,33 +66,19 @@ public class VideoFragment extends Fragment
 
 
     private void loadVideo() {
-        mPlayerView.setVisibility(View.VISIBLE);
-        // Smartphone mode
-        if(!mTwoPane){
-            // check if in landscape mode to enable full screen video
-            if(getContext().getResources().getBoolean(R.bool.is_landscape)){
-                hideSystemUI();
-            }
-            initializePlayer(Uri.parse(mMultimediaUrl));
-
-            // Tablet mode
-        } else {
-            if(null != mMultimediaUrl){
-                initializePlayer(Uri.parse(mMultimediaUrl));
-            }
+        // check if in landscape mode to enable full screen video
+        if(getContext().getResources().getBoolean(R.bool.is_landscape)){
+            hideSystemUI();
         }
+        initializePlayer(Uri.parse(mVideoUrl));
     }
 
-    public void setMultimediaUrl(String multimediaUrl){
-        mMultimediaUrl = multimediaUrl;
+    public void setVideoUrl(String videoUrl){
+        mVideoUrl = videoUrl;
         // if on Tablet then initialize the player
-        if(mTwoPane && mIsVideo) {
+        if(mTwoPane) {
             loadVideo();
         }
-    }
-
-    public void setIsVideo(boolean isVideo){
-        mIsVideo = isVideo;
     }
 
     private void hideSystemUI() {
@@ -114,7 +96,7 @@ public class VideoFragment extends Fragment
     }
 
     private void initializePlayer(Uri mediaUri) {
-        if (mExoPlayer == null) {
+        if (mExoPlayer == null && getActivity() != null) {
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
@@ -183,8 +165,7 @@ public class VideoFragment extends Fragment
         if(mExoPlayer != null) {
             outState.putLong(EXOPLAYER_POSITION, mExoPlayer.getCurrentPosition());
         }
-        outState.putString(MULTIMEDIA_URL, mMultimediaUrl);
-        outState.putBoolean(RecipeActivity.IS_VIDEO, mIsVideo);
+        outState.putString(VIDEO_URL, mVideoUrl);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package roiattia.com.bakeit.ui;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +18,7 @@ public class VideoActivity extends AppCompatActivity {
 
         // get intent and extra bundle
         String recipeName = getIntent().getStringExtra(RecipesListActivity.RECIPE_ITEM);
-        boolean isVideo = getIntent().getBooleanExtra(RecipeActivity.IS_VIDEO, false);
+        String multimedia = getIntent().getStringExtra(RecipeActivity.MULTIMEDIA);
 
         if(null != recipeName){
             // set the toolbar's title, font and add back button
@@ -34,18 +33,22 @@ public class VideoActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             String multimediaUrl = getIntent().getStringExtra(RecipeActivity.STEP_VIDEO);
             FragmentManager fragmentManager = getSupportFragmentManager();
-            if (isVideo) {
-                VideoFragment videoFragment = new VideoFragment();
-                videoFragment.setMultimediaUrl(multimediaUrl);
-                fragmentManager.beginTransaction()
-                        .add(R.id.video_container, videoFragment)
-                        .commit();
-            } else {
-                ImageFragment imageFragment = new ImageFragment();
-                imageFragment.setThumbnailUrl(multimediaUrl);
-                fragmentManager.beginTransaction()
-                        .add(R.id.video_container, imageFragment)
-                        .commit();
+            switch (multimedia) {
+                case RecipeActivity.VIDEO:
+                    VideoFragment videoFragment = new VideoFragment();
+                    videoFragment.setVideoUrl(multimediaUrl);
+                    fragmentManager.beginTransaction()
+                            .add(R.id.video_container, videoFragment)
+                            .commit();
+                    break;
+
+                case RecipeActivity.IMAGE:
+                    ImageFragment imageFragment = new ImageFragment();
+                    imageFragment.setThumbnailUrl(multimediaUrl);
+                    fragmentManager.beginTransaction()
+                            .add(R.id.video_container, imageFragment)
+                            .commit();
+                    break;
             }
         }
     }

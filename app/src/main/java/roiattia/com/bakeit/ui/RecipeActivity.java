@@ -30,16 +30,18 @@ public class RecipeActivity extends AppCompatActivity
 
     public static final String TAG = RecipeActivity.class.getSimpleName();
     public static final String STEP_VIDEO = "STEP_VIDEO";
-    public static final String STEP_THUMBNAIL = "STEP";
     private static final String VIDEO_FRAGMENT = "VIDEO_FRAGMENT";
-    public static final String IS_VIDEO = "IS_VIDEO";
-    private static final String IMAGE = "IMAGE";
-    private static final String VIDEO = "VIDEO";
+    private static final String IMAGE_FRAGMENT = "IMAGE_FRAGMENT";
+    public static final String IMAGE = "IMAGE";
+    public static final String VIDEO = "VIDEO";
+    public static final String MULTIMEDIA = "MULTIMEDIA";
 
     private View mLastStep;
     private Recipe mRecipe;
     private boolean mTwoPane;
     private VideoFragment mVideoFragment;
+    private ImageFragment mImageFragment;
+    private FragmentManager mFragmentManager;
 
     public static List<Ingredient> mIngredients;
 
@@ -63,32 +65,32 @@ public class RecipeActivity extends AppCompatActivity
             getSupportActionBar().setCustomView(toolbarTextview);
         }
 
+        mFragmentManager = getSupportFragmentManager();
         // create new fragments if there are no fragment saved in savedInstanceState
         if (savedInstanceState == null) {
             // create FragmentManager and RecipeViewPagerFragment for Smartphone
             // and Tablet modes
-            FragmentManager fragmentManager = getSupportFragmentManager();
             RecipeViewPagerFragment viewPagerFragment = new RecipeViewPagerFragment();
             mVideoFragment = new VideoFragment();
+            mImageFragment = new ImageFragment();
             Bundle bundle = new Bundle();
             bundle.putParcelable(RecipesListActivity.RECIPE_ITEM, mRecipe);
             viewPagerFragment.setArguments(bundle);
-            fragmentManager.beginTransaction()
+            mFragmentManager.beginTransaction()
                     .add(R.id.viewpager_container, viewPagerFragment)
                     .commit();
-
-            //if it's a Tablet view then add mVideoFragment
-            if (mTwoPane) {
-                fragmentManager.beginTransaction()
-                        .add(R.id.video_container, mVideoFragment)
-                        .commit();
-            }
         }
         // get videoFragment due to it being a member variable and so will
         // get created on screen rotation and will be null even if savedInstanceState is not null
         else {
-            mVideoFragment = (VideoFragment) getSupportFragmentManager()
-                    .getFragment(savedInstanceState, VIDEO_FRAGMENT);
+            if(mVideoFragment != null) {
+                mVideoFragment = (VideoFragment) getSupportFragmentManager()
+                        .getFragment(savedInstanceState, IMAGE_FRAGMENT);
+            } else mVideoFragment = new VideoFragment();
+            if(mImageFragment != null) {
+                mImageFragment = (ImageFragment) getSupportFragmentManager()
+                        .getFragment(savedInstanceState, VIDEO_FRAGMENT);
+            } else mImageFragment = new ImageFragment();
         }
     }
 
@@ -105,14 +107,16 @@ public class RecipeActivity extends AppCompatActivity
     }
 
     private void loadImage(int stepIndex, View stepCard) {
-        mVideoFragment.setIsVideo(false);
         // Smartphone mode
         if (!mTwoPane) {
             openVideoActivity(stepIndex, IMAGE);
         }
         // Tablet mode
         else {
-            mVideoFragment.setMultimediaUrl(mRecipe.steps().get(stepIndex).videoUrl());
+            mImageFragment.setThumbnailUrl(mRecipe.steps().get(stepIndex).thumbnailUrl());
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.video_container, mImageFragment)
+                    .commit();
             checkStepcardColor(stepCard);
         }
     }
@@ -124,9 +128,11 @@ public class RecipeActivity extends AppCompatActivity
         }
         // Tablet mode
         else {
-            mVideoFragment.setIsVideo(true);
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.video_container, mVideoFragment)
+                    .commit();
             mVideoFragment.releasePlayer();
-            mVideoFragment.setMultimediaUrl(mRecipe.steps().get(stepIndex).videoUrl());
+            mVideoFragment.setVideoUrl(mRecipe.steps().get(stepIndex).videoUrl());
             checkStepcardColor(stepCard);
         }
         // video not exist for this step
@@ -142,12 +148,12 @@ public class RecipeActivity extends AppCompatActivity
         switch (multimedia){
             case VIDEO:
                 intent.putExtra(STEP_VIDEO, mRecipe.steps().get(stepIndex).videoUrl());
-                intent.putExtra(IS_VIDEO, true);
+                intent.putExtra(MULTIMEDIA, VIDEO);
                 break;
 
             case IMAGE:
                 intent.putExtra(STEP_VIDEO, mRecipe.steps().get(stepIndex).thumbnailUrl());
-                intent.putExtra(IS_VIDEO, false);
+                intent.putExtra(MULTIMEDIA, IMAGE);
                 break;
         }
         intent.putExtra(RecipesListActivity.RECIPE_ITEM, mRecipe.name());
@@ -197,7 +203,12 @@ public class RecipeActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if(getResources().getBoolean(R.bool.is_tablet)) {
-            getSupportFragmentManager().putFragment(outState, VIDEO_FRAGMENT, mVideoFragment);
+            if(mVideoFragment.isAdded()) {
+                getSupportFragmentManager().putFragment(outState, VIDEO_FRAGMENT, mVideoFragment);
+            }
+            if(mImageFragment.isAdded()) {
+                getSupportFragmentManager().putFragment(outState, IMAGE_FRAGMENT, mImageFragment);
+            }
         }
     }
 }
