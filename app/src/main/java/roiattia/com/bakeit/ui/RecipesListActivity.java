@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +37,9 @@ public class RecipesListActivity extends AppCompatActivity
 
     private static final String TAG = RecipesListActivity.class.getSimpleName();
     public static final String RECIPE_ITEM = "RECIPE_ITEM";
+    private List<Recipe> mRecipes;
 
     @BindView(R.id.rv_recipes) RecyclerView mRecipesRecyclerView;
-
-    List<Recipe> mRecipes;
 
     // The Idling Resource which will be null in production.
     @Nullable
@@ -70,14 +70,15 @@ public class RecipesListActivity extends AppCompatActivity
 
         mRecipes = new ArrayList<>();
 
-        // connect to the api with retrofit
+        // Make api request with retrofit
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
+        // set mIdlingResource idle state to false to indicate recipes not loaded yet
         if (mIdlingResource != null) {
             mIdlingResource.setIdleState(false);
         }
-        // get the recipes list from the json file
+        // Get recipes list from json file
         Call<List<Recipe>> call = apiService.getRecipes();
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
@@ -92,46 +93,33 @@ public class RecipesListActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                // Log error here since request failed
-                Log.i(TAG, t.getMessage());
+                Toast.makeText(RecipesListActivity.this, "There was a problem showing recipes. please try again", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     /**
-     * this method initialize the recyclerview with the recipes fetched
+     * This method initialize the recyclerview with the recipes fetched
      * from the json file
      */
     private void initRecipesList() {
         RecipesAdapter mRecipesAdapter = new RecipesAdapter(RecipesListActivity.this, RecipesListActivity.this);
         mRecipesAdapter.setRecipesData(mRecipes);
-        // check if in tablet mode
-        if(getResources().getBoolean(R.bool.is_tablet)){
-            // set GridLayoutManager as LayoutManager for recyclerview
-            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-            float dpWidth = displayMetrics.widthPixels/ displayMetrics.density;
-            int numColumns = (int) (dpWidth/170);
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(this,
-                    numColumns,
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,
+                    getResources().getInteger(R.integer.number_of_columns),
                     LinearLayoutManager.VERTICAL, false);
-            mRecipesRecyclerView.setLayoutManager(gridLayoutManager);
-            // smartphone mode
-        } else {
-            // set LinearLayoutManager as LayoutManager for recyclerview
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-            mRecipesRecyclerView.setLayoutManager(linearLayoutManager);
-        }
+        mRecipesRecyclerView.setLayoutManager(gridLayoutManager);
         mRecipesRecyclerView.setHasFixedSize(true);
         mRecipesRecyclerView.setAdapter(mRecipesAdapter);
 
+        // set mIdlingResource to idle to indicate recipes loaded to screen
         if (mIdlingResource != null) {
             mIdlingResource.setIdleState(true);
         }
     }
 
     /**
-     * this method handles recipe onClick method from the RecipesAdapter
+     * This method handles recipe onStepClick method from the RecipesAdapter
      * @param recipeIndex the index of the selected recipe
      */
     @Override

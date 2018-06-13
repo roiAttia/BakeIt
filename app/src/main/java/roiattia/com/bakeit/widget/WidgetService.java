@@ -1,21 +1,12 @@
 package roiattia.com.bakeit.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import org.w3c.dom.Node;
-
-import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import roiattia.com.bakeit.R;
@@ -45,7 +36,7 @@ public class WidgetService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            mIngredientList = RecipeActivity.mIngrediens;
+            mIngredientList = RecipeActivity.mIngredients;
         }
 
         @Override

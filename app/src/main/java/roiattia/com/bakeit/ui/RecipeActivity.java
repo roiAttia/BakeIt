@@ -33,13 +33,15 @@ public class RecipeActivity extends AppCompatActivity
     public static final String STEP_THUMBNAIL = "STEP";
     private static final String VIDEO_FRAGMENT = "VIDEO_FRAGMENT";
     public static final String IS_VIDEO = "IS_VIDEO";
+    private static final String IMAGE = "IMAGE";
+    private static final String VIDEO = "VIDEO";
 
     private View mLastStep;
     private Recipe mRecipe;
     private boolean mTwoPane;
     private VideoFragment mVideoFragment;
 
-    public static List<Ingredient> mIngrediens;
+    public static List<Ingredient> mIngredients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +63,13 @@ public class RecipeActivity extends AppCompatActivity
             getSupportActionBar().setCustomView(toolbarTextview);
         }
 
-        // create new fragments when there is no previously saved state
+        // create new fragments if there are no fragment saved in savedInstanceState
         if (savedInstanceState == null) {
             // create FragmentManager and RecipeViewPagerFragment for Smartphone
             // and Tablet modes
             FragmentManager fragmentManager = getSupportFragmentManager();
             RecipeViewPagerFragment viewPagerFragment = new RecipeViewPagerFragment();
+            mVideoFragment = new VideoFragment();
             Bundle bundle = new Bundle();
             bundle.putParcelable(RecipesListActivity.RECIPE_ITEM, mRecipe);
             viewPagerFragment.setArguments(bundle);
@@ -76,66 +79,96 @@ public class RecipeActivity extends AppCompatActivity
 
             //if it's a Tablet view then add mVideoFragment
             if (mTwoPane) {
-                mVideoFragment = new VideoFragment();
                 fragmentManager.beginTransaction()
                         .add(R.id.video_container, mVideoFragment)
                         .commit();
             }
-        } else {
-            mVideoFragment = (VideoFragment) getSupportFragmentManager().getFragment(savedInstanceState, VIDEO_FRAGMENT);
+        }
+        // get videoFragment due to it being a member variable and so will
+        // get created on screen rotation and will be null even if savedInstanceState is not null
+        else {
+            mVideoFragment = (VideoFragment) getSupportFragmentManager()
+                    .getFragment(savedInstanceState, VIDEO_FRAGMENT);
         }
     }
 
     @Override
-    public void onClick(int stepIndex, View step) {
+    public void onStepClick(int stepIndex, View stepCard) {
         // check if there is a video for this step
         if (!mRecipe.steps().get(stepIndex).videoUrl().equals("")) {
-            loadVideo(stepIndex, step);
+            loadVideo(stepIndex, stepCard);
         } else if (!mRecipe.steps().get(stepIndex).thumbnailUrl().equals("")){
-            loadImage(stepIndex, step);
+            loadImage(stepIndex, stepCard);
         } else {
             Toast.makeText(this, R.string.video_not_available_toast, Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void loadImage(int stepIndex, View step) {
+    private void loadImage(int stepIndex, View stepCard) {
         mVideoFragment.setIsVideo(false);
-        Intent intent = new Intent(RecipeActivity.this, VideoActivity.class);
-        intent.putExtra(STEP_THUMBNAIL, mRecipe.steps().get(stepIndex).thumbnailUrl());
-        intent.putExtra(RecipesListActivity.RECIPE_ITEM, mRecipe.name());
-        intent.putExtra(IS_VIDEO, false);
-        startActivity(intent);
-    }
-
-    private void loadVideo(int stepIndex, View step) {
         // Smartphone mode
         if (!mTwoPane) {
-            Intent intent = new Intent(RecipeActivity.this, VideoActivity.class);
-            intent.putExtra(STEP_VIDEO, mRecipe.steps().get(stepIndex).videoUrl());
-            intent.putExtra(RecipesListActivity.RECIPE_ITEM, mRecipe.name());
-            intent.putExtra(IS_VIDEO, true);
-            startActivity(intent);
-            // Tablet mode
-        } else {
+            openVideoActivity(stepIndex, IMAGE);
+        }
+        // Tablet mode
+        else {
+            mVideoFragment.setMultimediaUrl(mRecipe.steps().get(stepIndex).videoUrl());
+            checkStepcardColor(stepCard);
+        }
+    }
+
+    private void loadVideo(int stepIndex, View stepCard) {
+        // Smartphone mode
+        if (!mTwoPane) {
+            openVideoActivity(stepIndex, VIDEO);
+        }
+        // Tablet mode
+        else {
             mVideoFragment.setIsVideo(true);
             mVideoFragment.releasePlayer();
             mVideoFragment.setMultimediaUrl(mRecipe.steps().get(stepIndex).videoUrl());
-            // check if there is a step stored
-            if(null != mLastStep) {
-                // get the cardview of the step
-                CardView cardView = mLastStep.findViewById(R.id.cv_step);
-                // set the step's cardview background color back to white
-                cardView.setCardBackgroundColor(Color.WHITE);
-            }
-            CardView cardView = step.findViewById(R.id.cv_step);
-            // set the step's cardview background color to selected color
-            cardView.setCardBackgroundColor(getResources()
-                    .getColor(R.color.colorSelectedStepCardviewBackground));
-            // save the step in mLastStep to set it color back to white
-            // when other step is selected
-            mLastStep = step;
+            checkStepcardColor(stepCard);
         }
         // video not exist for this step
+    }
+
+    /**
+     * Handles intent creating and navigation to VideoActivity
+     * @param stepIndex the index of the step
+     * @param multimedia the type of the step: video or image
+     */
+    private void openVideoActivity(int stepIndex, String multimedia) {
+        Intent intent = new Intent(RecipeActivity.this, VideoActivity.class);
+        switch (multimedia){
+            case VIDEO:
+                intent.putExtra(STEP_VIDEO, mRecipe.steps().get(stepIndex).videoUrl());
+                intent.putExtra(IS_VIDEO, true);
+                break;
+
+            case IMAGE:
+                intent.putExtra(STEP_VIDEO, mRecipe.steps().get(stepIndex).thumbnailUrl());
+                intent.putExtra(IS_VIDEO, false);
+                break;
+        }
+        intent.putExtra(RecipesListActivity.RECIPE_ITEM, mRecipe.name());
+        startActivity(intent);
+    }
+
+    private void checkStepcardColor(View stepCard) {
+        // check if there is a step stored
+        if(null != mLastStep) {
+            // get the cardview of the step
+            CardView cardView = mLastStep.findViewById(R.id.cv_step);
+            // set the step's cardview background color back to white
+            cardView.setCardBackgroundColor(Color.WHITE);
+        }
+        CardView cardView = stepCard.findViewById(R.id.cv_step);
+        // set the step's cardview background color to selected color
+        cardView.setCardBackgroundColor(getResources()
+                .getColor(R.color.colorSelectedStepCardviewBackground));
+        // save the step in mLastStep to set it color back to white
+        // when other step is selected
+        mLastStep = stepCard;
     }
 
     @Override
@@ -147,7 +180,7 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.mi_add_widget){
-            mIngrediens = mRecipe.ingredients();
+            mIngredients = mRecipe.ingredients();
             Toast.makeText(this, R.string.widget_added_toast, Toast.LENGTH_SHORT).show();
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
