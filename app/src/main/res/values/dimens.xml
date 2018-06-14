@@ -1,20 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="widget_margin">8dp</dimen>
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="servings_cardview_corner_radius">16dp</dimen>
-    <dimen name="card_view_padding">8dp</dimen>
-    <dimen name="divider_width">1dp</dimen>
-    <dimen name="recipes_text_size">36sp</dimen>
-    <dimen name="custom_tab_text_size">24sp</dimen>
-    <dimen name="exoplayer_vertical_margin">4dp</dimen>
-    <dimen name="exoplayer_horizontal_padding">4dp</dimen>
+    <!-- Recipes List Activity -->
+    <dimen name="recipes_list_vertical_margin">16dp</dimen>
+
+    <!-- Recipes List Item -->
     <dimen name="recipe_card_vertical_margin">4dp</dimen>
     <dimen name="recipe_card_corner_radius">8dp</dimen>
     <dimen name="recipe_text_size">18sp</dimen>
     <dimen name="recipe_height">170dp</dimen>
+    <dimen name="recipe_image_height">220dp</dimen>
+    <dimen name="recipe_name_bottom_margin">16dp</dimen>
+    <dimen name="recipe_name_start_margin">16dp</dimen>
+    <dimen name="recipe_name_text_size">24sp</dimen>
+
+    <!-- Custom Tab -->
+    <dimen name="custom_tab_text_size">24sp</dimen>
+
+    <!-- Exoplayer -->
+    <dimen name="exoplayer_vertical_margin">4dp</dimen>
+    <dimen name="exoplayer_horizontal_padding">4dp</dimen>
+
+    <!-- Ingredients Fragment -->
+    <dimen name="ingredient_top_margin">16dp</dimen>
+    <dimen name="ingredient_horizontal_margin">16dp</dimen>
+    <dimen name="servings_cardview_corner_radius">16dp</dimen>
+    <dimen name="servings_card_horizontal_margin">16dp</dimen>
+    <dimen name="servings_card_top_margin">16dp</dimen>
+
+    <!-- Ingredients List Item -->
     <dimen name="bullet_size">24sp</dimen>
+    <dimen name="ingredient_bullet_start_margin">16dp</dimen>
+    <dimen name="ingredient_bullet_top_margin">8dp</dimen>
+    <dimen name="ingredient_start_margin">8dp</dimen>
+
+    <!-- Steps List Fragment -->
+    <dimen name="steps_list_vertical_margin">4dp</dimen>
+
+    <!-- Steps List Item -->
+    <dimen name="step_card_vertical_margin">4dp</dimen>
+    <dimen name="step_card_horizontal_margin">16dp</dimen>
+    <dimen name="step_short_description_end_margin">8dp</dimen>
+    <dimen name="step_short_description_start_margin">4dp</dimen>
+    <dimen name="step_checkbox_start_margin">16dp</dimen>
+    <dimen name="step_checkbox_top_margin">16dp</dimen>
+    <dimen name="step_description_bottom_margin">8dp</dimen>
+    <dimen name="step_description_horizontal_margin">16dp</dimen>
+    <dimen name="step_description_top_margin">16dp</dimen>
+    <dimen name="step_multimedia_image_end_margin">16dp</dimen>
+    <dimen name="step_multimedia_image_top_margin">16dp</dimen>
+
+    <!-- Widget -->
+    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="widget_ingredient_vertical_margin">8dp</dimen>
+    <dimen name="widget_ingredient_start_margin">8dp</dimen>
+    <dimen name="widget_headline_padding">8dp</dimen>
+    <dimen name="widget_headline_textsize">24sp</dimen>
+    <dimen name="widget_listview_padding">8dp</dimen>
+    <dimen name="widget_empty_view_textsize">18sp</dimen>
+
+    <dimen name="card_view_padding">8dp</dimen>
+    <dimen name="divider_width">1dp</dimen>
+    <dimen name="recipes_text_size">36sp</dimen>
+
+
 
 </resources>

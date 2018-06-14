@@ -96,7 +96,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapter
         @BindView(R.id.cb_statue) CheckBox stepStatue;
         @BindView(R.id.tv_short_description) TextView shortDescription;
         @BindView(R.id.tv_description) TextView description;
-        @BindView(R.id.iv_video) ImageView videoImage;
+        @BindView(R.id.iv_multimedia) ImageView videoImage;
 
         StepsAdapterNewViewHolder(View itemView) {
             super(itemView);

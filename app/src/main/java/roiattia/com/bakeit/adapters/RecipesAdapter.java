@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import roiattia.com.bakeit.R;
 import roiattia.com.bakeit.models.Recipe;
+import roiattia.com.bakeit.utils.ImagesUtil;
 
 /**
  * Created by roiat on 21-03-18.
@@ -59,6 +60,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesA
             if(!mRecipes.get(position).image().equals("")){
                 Glide.with(mContext).load(mRecipes.get(position).image()).into(holder.mRecipeImage);
             }
+
+            int imageId = ImagesUtil.getImageId(position);
+            holder.mRecipeImage.setImageResource(imageId);
         }
     }
 

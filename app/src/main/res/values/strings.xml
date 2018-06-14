@@ -11,4 +11,11 @@
     <string name="add_to_widget">Add To Widget</string>
     <string name="servings">Servings:</string>
     <string name="widget_ingredients">Ingredients:</string>
+    <string name="recipe_imageview_content_description">recipe image</string>
+    <string name="exoplayer_prev_button_content_description">media player previous button</string>
+    <string name="exoplayer_play_button_content_description">media player play button</string>
+    <string name="exoplayer_pause_button_content_description">media player pause button</string>
+    <string name="step_fragment_image">step image</string>
+    <string name="step_multimedia_icon_content_description">step card multimedia icon</string>
+    <string name="widget_empty_view_text">Pick a recipe to add It\'s ingredients list here</string>
 </resources>
