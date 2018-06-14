@@ -8,7 +8,7 @@ As a working Android developer, you often have to create and implement apps wher
 - Implement MediaPlayer/Exoplayer to display videos.
 - Handle error cases in Android.
 - Add a widget.
-- Leverage a third-party libraries in the app.
+- Leverage third-party libraries in the app.
 - Use Fragments to create a responsive design that works on phones and tablets.
 - Localize the app for another language.
 
