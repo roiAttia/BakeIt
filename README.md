@@ -17,3 +17,4 @@ As a working Android developer, you often have to create and implement apps wher
 - [Retrofit 2](https://github.com/square/retrofit) with [Gson Converter](https://github.com/square/retrofit/tree/master/retrofit-converters/gson)
 - [ExoPlayer](https://github.com/google/ExoPlayer)
 - [AutoValue](https://github.com/google/auto) with [Gson Extension](https://github.com/rharter/auto-value-gson)
+- [Glide](https://github.com/bumptech/glide) 
