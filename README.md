@@ -18,3 +18,10 @@ As a working Android developer, you often have to create and implement apps wher
 - [ExoPlayer](https://github.com/google/ExoPlayer)
 - [AutoValue](https://github.com/google/auto) with [Gson Extension](https://github.com/rharter/auto-value-gson)
 - [Glide](https://github.com/bumptech/glide) 
+
+## Screenshots:
+### Nexus 5X:
+<img src="https://github.com/roiAttia/BakeIt/blob/master/app/screenshots/Nexus5X.jpg" />
+
+### Nexus 9:
+<img src="https://github.com/roiAttia/BakeIt/blob/master/app/screenshots/Nexus9.jpg" />
